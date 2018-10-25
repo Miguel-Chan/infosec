@@ -2,8 +2,8 @@ package cipher
 
 import (
 	"bytes"
-	"fmt"
 	"errors"
+	"fmt"
 	"os"
 )
 
