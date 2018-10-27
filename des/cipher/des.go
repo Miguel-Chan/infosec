@@ -54,10 +54,17 @@ func (cipher *DesCipher) processData(originData []byte, encrypt bool) ([]byte, e
 	for i := 0; i < blocksCount; i++ {
 		var block []byte
 		if len(originData) < (i+1)*BLOCK_SIZE {
-			block = originData[i*BLOCK_SIZE:]
+			if len(originData) > i * BLOCK_SIZE {
+				block = originData[i*BLOCK_SIZE:]
+			} else {
+				block = make([]byte, 0, 8)
+			}
 			pkcs7Padding(&block)
 		} else {
 			block = originData[i*BLOCK_SIZE : (i+1)*BLOCK_SIZE]
+			if encrypt && i == blocksCount - 1 {
+				blocksCount++
+			}
 		}
 		permuted := initialPermute(block)
 		left := permuted[:4]
@@ -196,7 +203,7 @@ func pkcs7Unpadding(blockData *[]byte) error {
 		return errors.New("input data is longer than BLOCK_SIZE")
 	}
 	UnpaddingSize := (*blockData)[len(*blockData)-1]
-	if UnpaddingSize >= 8 {
+	if UnpaddingSize > 8 {
 		return nil
 	}
 	unpadFlag := true
