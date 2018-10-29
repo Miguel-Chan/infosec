@@ -13,7 +13,8 @@ func main() {
 	var filename, keyStr string
 	silentMode := false
 	encryptMode := true
-	errStr := fmt.Sprintf("Usage: %v {encrypt|decrypt} [-s|--silent] [{-i|--input} filename]", os.Args[0])
+	cbcMode := false
+	errStr := fmt.Sprintf("Usage: %v {encrypt|decrypt} [-s|--silent] [-cbc(default ecb mode)] [{-i|--input} filename]", os.Args[0])
 
 	if len(os.Args) == 1 {
 		fmt.Fprintln(os.Stderr, errStr)
@@ -30,6 +31,8 @@ func main() {
 				encryptMode = false
 			case "-s", "--silent":
 				silentMode = true
+			case "-cbc":
+				cbcMode = true
 			case "-i", "--input":
 				i++
 				if i == len(os.Args) {
@@ -54,6 +57,11 @@ func main() {
 			fmt.Println("You must specify a file for decryption!")
 			os.Exit(1)
 		}
+	}
+	if cbcMode {
+		fmt.Println("Processing with CBC mode.")
+	} else {
+		fmt.Println("Processing with ECB mode.")
 	}
 
 	fmt.Print("Enter your encryption key: ")
@@ -89,7 +97,7 @@ func main() {
 		input = append(input, b)
 	}
 
-	ci, err := cipher.NewDesCipher(key)
+	ci, err := cipher.NewDesCipher(key, cbcMode)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v", err)
 		os.Exit(1)

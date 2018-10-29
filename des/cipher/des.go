@@ -13,9 +13,10 @@ const BLOCK_SIZE = 8
 type DesCipher struct {
 	key    [8]byte
 	subKey [16][6]byte
+	cbcMode bool
 }
 
-func NewDesCipher(key []byte) (*DesCipher, error) {
+func NewDesCipher(key []byte, ecbMode bool) (*DesCipher, error) {
 	//Key len is 64 bits
 	if len(key) != 8 {
 		return nil, errors.New("encryption key length should be exactly 8")
@@ -25,6 +26,7 @@ func NewDesCipher(key []byte) (*DesCipher, error) {
 	copy(cipherKey[:], key)
 	cipher := &DesCipher{
 		key: cipherKey,
+		cbcMode: ecbMode,
 	}
 	cipher.generateSubKey()
 	return cipher, nil
@@ -44,15 +46,19 @@ func (cipher *DesCipher) DecryptData(originData []byte) ([]byte, error) {
 //process them in one function body.
 func (cipher *DesCipher) processData(originData []byte, encrypt bool) ([]byte, error) {
 	blocksCount := len(originData) / 8
+	//Key as initial vector
+	cbcVector := cipher.key[:]
 	if len(originData)%8 != 0 {
 		if !encrypt {
 			return nil, errors.New("input data for decryption is invalid")
 		}
 		blocksCount++
 	}
+
 	outputData := make([]byte, 0, len(originData)+BLOCK_SIZE-(len(originData)%BLOCK_SIZE))
 	for i := 0; i < blocksCount; i++ {
 		var block []byte
+		tempVector := make([]byte, 8)
 		if len(originData) < (i+1)*BLOCK_SIZE {
 			if len(originData) > i * BLOCK_SIZE {
 				block = originData[i*BLOCK_SIZE:]
@@ -64,6 +70,15 @@ func (cipher *DesCipher) processData(originData []byte, encrypt bool) ([]byte, e
 			block = originData[i*BLOCK_SIZE : (i+1)*BLOCK_SIZE]
 			if encrypt && i == blocksCount - 1 {
 				blocksCount++
+			}
+		}
+		if cipher.cbcMode {
+			if encrypt{
+				for index := range block {
+					block[index] ^= cbcVector[index]
+				}
+			} else {
+				copy(tempVector, block)
 			}
 		}
 		permuted := initialPermute(block)
@@ -99,6 +114,16 @@ func (cipher *DesCipher) processData(originData []byte, encrypt bool) ([]byte, e
 			err := pkcs7Unpadding(&finalData)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "Unpadding Error: %v", err)
+			}
+		}
+		if cipher.cbcMode {
+			if encrypt {
+				cbcVector = finalData
+			} else {
+				for index := range finalData {
+					finalData[index] ^= cbcVector[index]
+				}
+				cbcVector = tempVector
 			}
 		}
 		outputData = append(outputData, finalData...)
