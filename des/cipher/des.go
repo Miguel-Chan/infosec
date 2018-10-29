@@ -16,7 +16,7 @@ type DesCipher struct {
 	cbcMode bool
 }
 
-func NewDesCipher(key []byte, ecbMode bool) (*DesCipher, error) {
+func NewDesCipher(key []byte, cbcMode bool) (*DesCipher, error) {
 	//Key len is 64 bits
 	if len(key) != 8 {
 		return nil, errors.New("encryption key length should be exactly 8")
@@ -26,7 +26,7 @@ func NewDesCipher(key []byte, ecbMode bool) (*DesCipher, error) {
 	copy(cipherKey[:], key)
 	cipher := &DesCipher{
 		key: cipherKey,
-		cbcMode: ecbMode,
+		cbcMode: cbcMode,
 	}
 	cipher.generateSubKey()
 	return cipher, nil
@@ -110,12 +110,6 @@ func (cipher *DesCipher) processData(originData []byte, encrypt bool) ([]byte, e
 		copy(left, right)
 		copy(right, temp[:])
 		finalData := permute(permuted, fPermuteTable[:])
-		if !encrypt && i == blocksCount-1 {
-			err := pkcs7Unpadding(&finalData)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Unpadding Error: %v", err)
-			}
-		}
 		if cipher.cbcMode {
 			if encrypt {
 				cbcVector = finalData
@@ -124,6 +118,12 @@ func (cipher *DesCipher) processData(originData []byte, encrypt bool) ([]byte, e
 					finalData[index] ^= cbcVector[index]
 				}
 				cbcVector = tempVector
+			}
+		}
+		if !encrypt && i == blocksCount-1 {
+			err := pkcs7Unpadding(&finalData)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Unpadding Error: %v", err)
 			}
 		}
 		outputData = append(outputData, finalData...)
