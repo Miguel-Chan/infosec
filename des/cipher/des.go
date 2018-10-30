@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"time"
 )
 
 //8 bytes, 64 bits for per DES block.
@@ -56,7 +57,19 @@ func (cipher *DesCipher) processData(originData []byte, encrypt bool) ([]byte, e
 	}
 
 	outputData := make([]byte, 0, len(originData)+BLOCK_SIZE-(len(originData)%BLOCK_SIZE))
-	for i := 0; i < blocksCount; i++ {
+	//Refresh progress every 1 seconds
+	var i int
+	go func() {
+		for {
+			if i >= blocksCount {
+				break
+			}
+			fmt.Printf("\rProcessed: %.2v%%...   ", float64(i)/float64(blocksCount)*100)
+			time.Sleep(time.Second)
+		}
+	}()
+	for i = 0; i < blocksCount; i++ {
+
 		var block []byte
 		tempVector := make([]byte, 8)
 		if len(originData) < (i+1)*BLOCK_SIZE {
@@ -128,6 +141,7 @@ func (cipher *DesCipher) processData(originData []byte, encrypt bool) ([]byte, e
 		}
 		outputData = append(outputData, finalData...)
 	}
+	fmt.Println("\rProcessing finished.       ")
 	return outputData, nil
 }
 

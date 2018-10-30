@@ -134,13 +134,13 @@ func main() {
 		if !silentMode {
 			fmt.Printf("%v\n", string(output))
 		}
-		outFile, err := os.Create("DecryptedData.txt")
+		outFile, err := os.Create("DecryptedData")
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "Error creating file: %v", err)
 			os.Exit(1)
 		}
 		outFile.Write(output)
-		println("Output has been saved to DecryptedData.txt")
+		println("Output has been saved to DecryptedData")
 	}
 
 }
