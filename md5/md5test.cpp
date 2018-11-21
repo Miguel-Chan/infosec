@@ -20,6 +20,10 @@ void md5StrTest(const std::string &input) {
 void md5FileTest(const char *filename) {
     ifstream fs(filename);
     stringstream buf;
+    if (!fs.is_open()) {
+        cerr << "md5: " << filename << ": No such file or directory" << endl;
+        return;
+    }
     buf << fs.rdbuf();
     MD5 h;
     auto md5Data = h.sum(buf.str());

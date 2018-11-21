@@ -54,6 +54,9 @@ int main(int argc, char** argv) {
         stringstream dataBuf;
         dataBuf << cin.rdbuf();
         auto data = dataBuf.str();
+        if (data[data.size() - 1] == '\n') {
+            data = data.substr(0, data.size() - 1);
+        }
         MD5 h;
         auto md5Data = h.sum(data);
         cout << bytesToHexStr(md5Data) << endl;
