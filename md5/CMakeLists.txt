@@ -18,7 +18,7 @@ if(UNIX AND NOT APPLE)
 endif(UNIX AND NOT APPLE)
 
 if (WIN32)
-    add_executable(panorama
+    add_executable(md5
             main.cpp md5.cpp md5.h md5test.cpp md5test.h)
 endif(WIN32)
 
