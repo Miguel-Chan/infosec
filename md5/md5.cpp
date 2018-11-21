@@ -5,6 +5,7 @@
 #include "md5.h"
 #include <functional>
 #include <climits>
+#include <cstring>
 
 using namespace std;
 
