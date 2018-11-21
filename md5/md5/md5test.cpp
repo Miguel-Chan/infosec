@@ -20,7 +20,7 @@ void md5StrTest(const std::string &input) {
 }
 
 void md5FileTest(const char *filename) {
-    ifstream fs(filename);
+    ifstream fs(filename, ios::binary);
     stringstream buf;
     if (!fs.is_open()) {
         cerr << "md5: " << filename << ": No such file or directory" << endl;
