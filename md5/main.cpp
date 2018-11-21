@@ -9,7 +9,7 @@
 using namespace std;
 
 void print_usage() {
-    cerr << "usage: md5 [-t] [-x] [-s string] [files ...]" << endl;
+    cerr << "usage: md5 [-x] [-s string] [files ...]" << endl;
     exit(1);
 }
 
@@ -28,9 +28,6 @@ int main(int argc, char** argv) {
         } else {
             md5StrTest(argv[++i]);
         }
-    };
-    processer["t"] = [&]() {
-        md5TimeTest();
     };
     processer["x"] = [&]() {
         md5RunTest();

@@ -78,20 +78,3 @@ std::string bytesToHexStr(std::array<unsigned char, 16> data) {
     }
     return builder.str();
 }
-
-void md5TimeTest() {
-    // Time test
-    cout << "MD5 time trial. Digesting 100000 10000-byte blocks ...";
-    time_t start = time(nullptr);
-    MD5 h;
-    array<unsigned char, 16> digest{};
-    for (int i = 0; i < 100000; i++) {
-        vector<unsigned char> data(10000, 0);
-        digest = h.sum(data);
-    }
-    time_t end = time(nullptr);
-    cout << "done" << endl;
-    cout << "Digest: " << bytesToHexStr(digest) << endl;
-    cout << "Time: " << end - start << " seconds" << endl;
-    cout << "Speed: " << 1000000000 / (end - start) << " bytes/second" << endl;
-}
