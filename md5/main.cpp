@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
         }
     };
     processer["t"] = [&]() {
-        md5RunTest();
+        md5TimeTest();
     };
     processer["x"] = [&]() {
         md5RunTest();
