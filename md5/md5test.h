@@ -10,6 +10,7 @@
 
 void md5StrTest(const std::string& input);
 void md5FileTest(const char* filename);
+void md5TimeTest();
 void md5RunTest();
 std::string bytesToHexStr(std::array<unsigned char, 16> data);
 

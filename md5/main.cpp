@@ -9,7 +9,7 @@
 using namespace std;
 
 void print_usage() {
-    cerr << "usage: md5 [-test] [-s string] [files ...]" << endl;
+    cerr << "usage: md5 [-t] [-x] [-s string] [files ...]" << endl;
     exit(1);
 }
 
@@ -29,7 +29,10 @@ int main(int argc, char** argv) {
             md5StrTest(argv[++i]);
         }
     };
-    processer["test"] = [&]() {
+    processer["t"] = [&]() {
+        md5RunTest();
+    };
+    processer["x"] = [&]() {
         md5RunTest();
     };
     for (i = 1; i < argc; i++) {
@@ -54,9 +57,6 @@ int main(int argc, char** argv) {
         stringstream dataBuf;
         dataBuf << cin.rdbuf();
         auto data = dataBuf.str();
-        if (data[data.size() - 1] == '\n') {
-            data = data.substr(0, data.size() - 1);
-        }
         MD5 h;
         auto md5Data = h.sum(data);
         cout << bytesToHexStr(md5Data) << endl;

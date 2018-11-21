@@ -6,6 +6,7 @@
 #include <functional>
 #include <climits>
 #include <cstring>
+#include <iostream>
 
 using namespace std;
 
@@ -87,7 +88,7 @@ void MD5::padding(std::vector<unsigned char> &data) {
     //Padding data is 100000....0
     data.reserve(data.size() + p + 8);
     data.push_back(0x80);
-    vector<unsigned char> padData(p, 0);
+    vector<unsigned char> padData(p - 1, 0);
     data.insert(end(data), begin(padData), end(padData));
 
     // Pad K mod 2^64 to data
