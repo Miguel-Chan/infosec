@@ -59,7 +59,7 @@ array<unsigned char, 16> MD5::md5Sum(std::vector<unsigned char> data) {
     // Each step is a block of 64 bytes(512 bits)
     for (int i = 0; i < data.size(); i += 64) {
         array<unsigned char, 64> block{};
-        copy_n(begin(data) + i, 64, begin(block));
+        copy(begin(data) + i, begin(data) + i + 64, begin(block));
         cv = HMD5(block, cv);
     }
 
