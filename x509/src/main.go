@@ -63,7 +63,7 @@ func main() {
 
 func printCertInfo(info *x509cert.CertInfo) {
 	fmt.Printf("Version: %v\n", info.Version)
-	fmt.Printf("Serial Number: %v\n", info.Serial)
+	fmt.Printf("Serial Number: %v(%X)\n", info.Serial, info.Serial)
 	fmt.Printf("Signature Algorithm: %v\n", x509cert.AlgorithmName[x509cert.GetAlgorithmFromOid(info.SignatureAlgorithm.Algorithm)])
 	fmt.Printf("Issuer: \n")
 	fmt.Printf("\tCountry: %v\n", info.Issuer.Country)

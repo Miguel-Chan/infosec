@@ -121,8 +121,6 @@ func BitStringToHex(str asn1.BitString) []byte {
 	return result
 }
 
-
-
 func GetAlgorithmFromID(algoID AlgorithmIdentifier) int {
 
 	for index, val := range oidList {
@@ -174,7 +172,7 @@ func GetPublicKey(algoIndex int, key publicKeyInfo) interface{} {
 		asn1.Unmarshal(key.Algorithm.Parameters.FullBytes, &param)
 		return &dsa.PublicKey{
 			Parameters: *param,
-			Y: p,
+			Y:          p,
 		}
 	case EcdsaEncryption:
 		namedCurveOID := new(asn1.ObjectIdentifier)
