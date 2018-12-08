@@ -178,6 +178,9 @@ func GetPublicKey(algoIndex int, key publicKeyInfo) interface{} {
 		namedCurveOID := new(asn1.ObjectIdentifier)
 		asn1.Unmarshal(key.Algorithm.Parameters.FullBytes, namedCurveOID)
 		namedCurve := findCurveFromOID(*namedCurveOID)
+		if namedCurve == nil {
+			return nil
+		}
 		x, y := elliptic.Unmarshal(namedCurve, data)
 		if x == nil {
 			panic("failed to unmarshal elliptic curve point")

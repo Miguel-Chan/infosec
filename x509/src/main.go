@@ -1,13 +1,14 @@
 package main
 
 import (
-	"./x509cert"
 	"crypto/rsa"
 	"encoding/asn1"
 	"encoding/pem"
 	"flag"
 	"fmt"
 	"os"
+
+	"./x509cert"
 )
 
 func main() {
@@ -52,7 +53,7 @@ func main() {
 	_, err = asn1.Unmarshal(decodeData, &cert)
 
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Fail to parse asn1\n")
+		fmt.Fprintf(os.Stderr, "Fail to parse asn1： %v\n", err)
 		os.Exit(1)
 	}
 
